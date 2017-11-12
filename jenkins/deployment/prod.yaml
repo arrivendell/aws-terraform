@@ -1,0 +1,10 @@
+
+---
+- name:  Install Jenkins
+  hosts: launched
+  gather_facts: true
+  sudo: yes
+
+
+  roles:
+  - jenkins
