@@ -28,7 +28,7 @@ resource "aws_launch_configuration" "url_shortener" {
 
 resource "aws_autoscaling_group" "ecs-autoscaling-group" {
   name                        = "url_shortener"
-  max_size                    = 3
+  max_size                    = 4
   min_size                    = 1
   desired_capacity            = "2"
   vpc_zone_identifier         = ["${aws_subnet.url_shortener_1a.id}","${aws_subnet.url_shortener_1b.id}"]
@@ -40,10 +40,55 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
   }
 }
 
-resource "aws_autoscaling_policy" "ecs_autoscaling_url_shortener" {
-  name                   = "ecs_autoscaling_url_shortener"
+resource "aws_autoscaling_policy" "increase_autoscaling_ec2_url_shortener" {
+  name                   = "increase_autoscaling_ec2_url_shortener"
   scaling_adjustment     = 2
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 500
   autoscaling_group_name = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+}
+
+
+resource "aws_autoscaling_policy" "decrease_autoscaling_ec2_url_shortener" {
+  name                   = "decrease_autoscaling_ec2_url_shortener"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 500
+  autoscaling_group_name = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+}
+
+resource "aws_cloudwatch_metric_alarm" "CPU_url_shortener_high_utilization" {
+  alarm_name          = "CPU-url-shortener-high-utilization"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "60"
+
+  dimensions {
+    AutoScalingGroupName = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+  }
+
+  alarm_description = "EC2 cpu high usage"
+  alarm_actions     = ["${aws_autoscaling_policy.increase_autoscaling_ec2_url_shortener.arn}", "${aws_appautoscaling_policy.increase_url_shortener.arn}"]
+}
+
+resource "aws_cloudwatch_metric_alarm" "CPU_url_shortener_low_utilization" {
+  alarm_name          = "CPU-url-shortener-low-utilization"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "20"
+
+  dimensions {
+    AutoScalingGroupName = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+  }
+
+  alarm_description = "EC2 cpu low usage"
+  alarm_actions     = ["${aws_autoscaling_policy.decrease_autoscaling_ec2_url_shortener.arn}", "${aws_appautoscaling_policy.decrease_url_shortener.arn}"]
 }
