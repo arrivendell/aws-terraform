@@ -1,0 +1,11 @@
+aws s3 mb s3://clusters.url.arrivendel.com
+export KOPS_STATE_STORE=s3://clusters.url.arrivendel.com
+kops create cluster --zones=eu-west-1a euwest1.url.arrivendel.com
+kops edit ig --name=euwest1.url.arrivendel.com nodes
+kops edit ig --name=euwest1.url.arrivendel.com master-eu-west-1a
+
+kops update cluster euwest1.url.arrivendel.com --yes
+
+kubectl create -f ./service_replicated.yaml
+
+kubectl rolling-update frontend --image=golgothlt/url_shortener:latest

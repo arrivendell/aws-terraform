@@ -1,0 +1,35 @@
+[
+  {
+    "name": "url-shortener",
+    "links": [
+      "redis_cache"
+    ],
+    "image": "golgothlt/url_shortener",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 5000,
+        "hostPort": 5000
+      }
+    ],
+    "environment": [
+      {
+        "name": "ENV",
+        "value": "prod"
+      },
+      {
+        "name": "HOST_REDIS",
+        "value": "redis_cache"
+      }
+    ],
+    "memory": 100,
+    "cpu": 200,
+    "essential": true
+  },
+  {
+    "name": "redis_cache",
+    "image": "redis:alpine",
+    "cpu": 200,
+    "memory": 200
+  }
+]
