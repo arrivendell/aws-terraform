@@ -46,3 +46,27 @@ resource "aws_ecs_service" "url_shortener" {
   #   expression = "attribute:ecs.availability-zone in [eu-west-1a, eu-west-1b]"
   # }
 }
+
+resource "aws_appautoscaling_target" "ecs_target" {
+max_capacity       = 4
+min_capacity       = 1
+resource_id        = "service/${aws_ecs_cluster.url_shortener.name}/${aws_ecs_service.url_shortener.name}"
+role_arn           = "${aws_iam_role.app_autoscale.arn}"
+scalable_dimension = "ecs:service:DesiredCount"
+service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "increase_url_shortener" {
+  name = "increase_url_shortener"
+  service_namespace = "ecs"
+  resource_id = "service/${aws_ecs_cluster.url_shortener.name}/${aws_ecs_service.url_shortener.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 200
+  step_adjustment = {
+    metric_interval_lower_bound = 0
+    scaling_adjustment = 1
+  }
+  depends_on = ["aws_appautoscaling_target.ecs_target"]
+
+}

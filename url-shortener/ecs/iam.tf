@@ -18,6 +18,32 @@ resource "aws_iam_role" "ecs_service" {
 EOF
 }
 
+resource "aws_iam_role" "app_autoscale" {
+  name = "app_autoscale"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "application-autoscaling.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "app_autoscale" {
+  name = "app_autoscale"
+  roles = ["${aws_iam_role.app_autoscale.name}"]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
+}
+
 resource "aws_iam_policy" "url_shortener" {
   # dynamodb resource could be created for safety reasons
   name        = "url_shortener"

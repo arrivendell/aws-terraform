@@ -39,3 +39,11 @@ resource "aws_autoscaling_group" "ecs-autoscaling-group" {
     create_before_destroy = true
   }
 }
+
+resource "aws_autoscaling_policy" "ecs_autoscaling_url_shortener" {
+  name                   = "ecs_autoscaling_url_shortener"
+  scaling_adjustment     = 2
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 500
+  autoscaling_group_name = "${aws_autoscaling_group.ecs-autoscaling-group.name}"
+}
