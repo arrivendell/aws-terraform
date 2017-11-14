@@ -1,6 +1,6 @@
 resource "aws_security_group" "elb_default_sg" {
     name        = "elb_default_sg"
-    description = "Allowing HTTP in for elbs, and all out"
+    description = "Allowing HTTP in for elbs and all out"
     vpc_id = "${aws_vpc.url_shortener.id}"
 
 
@@ -21,13 +21,13 @@ resource "aws_security_group" "elb_default_sg" {
 }
 resource "aws_security_group" "instances_default_sg" {
     name        = "instances_default_sg"
-    description = "Allowing HTTP, custom app port and SSH from adrien's host for instances behind elb"
+    description = "Allowing HTTP custom app port and SSH from adriens host for instances behind elb"
     vpc_id = "${aws_vpc.url_shortener.id}"
 
 
     ingress {
-        from_port = 5000
-        to_port = 5000
+        from_port = 0
+        to_port = 65535
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }

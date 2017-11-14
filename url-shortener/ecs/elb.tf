@@ -7,8 +7,8 @@ resource "aws_alb" "url_shortener" {
 
 resource "aws_alb_target_group" "url_shortener" {
   name = "url-shortener"
-  port = "5000"
   protocol = "HTTP"
+  port = "5000"
   vpc_id = "${aws_vpc.url_shortener.id}"
 
   health_check {
@@ -17,7 +17,6 @@ resource "aws_alb_target_group" "url_shortener" {
     interval = "30"
     matcher = "200"
     path = "/"
-    port = "5000"
     protocol = "HTTP"
     timeout = "5"
   }
