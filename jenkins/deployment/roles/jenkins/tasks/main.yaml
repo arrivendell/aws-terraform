@@ -4,4 +4,5 @@
 - name: Add keychain for Jenkins CI repositories
   apt_key: url=http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key state=present
 
+-name: Install jenkins
 - apt: name=jenkins state=latest force=yes
