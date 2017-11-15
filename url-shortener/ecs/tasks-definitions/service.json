@@ -9,7 +9,7 @@
     "portMappings": [
       {
         "containerPort": 5000,
-        "hostPort": 5000
+        "hostPort": 0
       }
     ],
     "environment": [
@@ -19,7 +19,11 @@
       },
       {
         "name": "HOST_REDIS",
-        "value": "redis_cache"
+        "value": "url-shortener-0001-001.d6kdjf.0001.euw1.cache.amazonaws.com"
+      },
+      {
+        "name": "REDIS_TYPE",
+        "value": "CLUSTER"
       }
     ],
     "memory": 100,

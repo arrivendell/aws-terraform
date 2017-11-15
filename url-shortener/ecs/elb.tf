@@ -1,32 +1,30 @@
-
 resource "aws_alb" "url_shortener" {
-  name = "url-shortener"
+  name            = "url-shortener"
   security_groups = ["${aws_security_group.elb_default_sg.id}"]
-  subnets = ["${aws_subnet.url_shortener_1a.id}", "${aws_subnet.url_shortener_1b.id}"]
+  subnets         = ["${aws_subnet.url_shortener_1a.id}", "${aws_subnet.url_shortener_1b.id}"]
 }
 
 resource "aws_alb_target_group" "url_shortener" {
-  name = "url-shortener"
-  port = "5000"
+  name     = "url-shortener"
   protocol = "HTTP"
-  vpc_id = "${aws_vpc.url_shortener.id}"
+  port     = "5000"
+  vpc_id   = "${aws_vpc.url_shortener.id}"
 
   health_check {
-    healthy_threshold = "5"
+    healthy_threshold   = "5"
     unhealthy_threshold = "2"
-    interval = "30"
-    matcher = "200"
-    path = "/"
-    port = "5000"
-    protocol = "HTTP"
-    timeout = "5"
+    interval            = "30"
+    matcher             = "200"
+    path                = "/"
+    protocol            = "HTTP"
+    timeout             = "5"
   }
 }
 
 resource "aws_alb_listener" "url_shortener" {
   load_balancer_arn = "${aws_alb.url_shortener.arn}"
-  port = "80"
-  protocol = "HTTP"
+  port              = "80"
+  protocol          = "HTTP"
 
   default_action {
     target_group_arn = "${aws_alb_target_group.url_shortener.arn}"
