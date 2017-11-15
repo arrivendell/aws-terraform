@@ -25,7 +25,7 @@ To be able to run the terraform on your account, you need some permissions, for 
 Go to the `./url_shortener/ecs` folder for the next steps if you wish to recreate the infrastructure.
 
 
-## required:
+## Required:
 Install aws cli:
 http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 
@@ -35,13 +35,19 @@ Download terraform here => https://www.terraform.io/downloads.html
 Unzip the package and move terraform to your bins ( /usr/local/bin/ for instance on linux) or add terraform to your PATH variable
 
 Now you should be able to run terraform as a command on your terminal, start by running
+
 `terraform init`
+
 Then you can start the plan step:
+
 `terraform plan`
+
 Apply it:
+
 `terraform plan`
 
 At this step it might fail complaining about concurrency, rerun the apply once more
 
 Then you can destroy your infra:
+
 `terraform destroy`
