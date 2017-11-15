@@ -61,11 +61,16 @@ resource "aws_appautoscaling_policy" "increase_url_shortener" {
   service_namespace = "ecs"
   resource_id = "service/${aws_ecs_cluster.url_shortener.name}/${aws_ecs_service.url_shortener.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 200
-  step_adjustment = {
-    metric_interval_lower_bound = 0
-    scaling_adjustment = 1
+
+  step_scaling_policy_configuration {
+    adjustment_type        = "ChangeInCapacity"
+    cooldown               = 200
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment = 1
+    }
   }
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 
@@ -76,11 +81,16 @@ resource "aws_appautoscaling_policy" "decrease_url_shortener" {
   service_namespace = "ecs"
   resource_id = "service/${aws_ecs_cluster.url_shortener.name}/${aws_ecs_service.url_shortener.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 200
-  step_adjustment = {
-    metric_interval_lower_bound = 0
-    scaling_adjustment = -1
+
+  step_scaling_policy_configuration {
+    adjustment_type        = "ChangeInCapacity"
+    cooldown               = 200
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment = -1
+    }
   }
   depends_on = ["aws_appautoscaling_target.ecs_target"]
 
